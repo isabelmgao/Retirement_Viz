@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css?family=Lato|Montserrat" rel="stylesheet" type='text/css'>
+<style> /* set the CSS */
+
+  body {
+    font: 16px Lato;
+    background-color: rgb(240, 245, 245);
+  }
+  path{
+      stroke: steelblue;
+      stroke-width: 2;
+      fill: none;
+  }
+  #tradit{
+    font: 12px Lato;
+    color: steelblue;
+  }
+  #roth{
+    font: 12px Lato;
+    color: green;
+  }
+  #main{
+    padding: 10px;
+    /*margin-bottom: 40px;*/
+  }
+  #bkgdText{
+    margin-left: 30px;
+    margin-right: 30px
+    /*padding: 30px;*/
+  }
+  .axis path,
+  .axis line {
+      fill: none;
+      stroke: grey;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+  }
+
+  path.rothline{
+    fill: none;
+    stroke: green;
+    stroke-width: 2;
+  }
+  #img{
+    padding: 30px;
+  }
+</style>
+
+<body>
+  <!--- FOR SMALL MULTIPLES, USE FORM:  -->
+  <!-- <form class = "form" method = "post">
+    <legend>Your details</legend>
+    <div>
+      <label for="age">Current Age</label>
+      <input id="age" class = 'age' name="age" type="number" placeholder="25" required>
+    </div>
+
+      <div>
+        <label for="income">Annual Income</label>
+        <input id="income" class = 'income' name="income" type="number" placeholder="$40,000" required>
+      </div>
+
+      <div>
+        <label for="initialInvestment">Existing Invesment</label>
+        <input id="initialInvestment" class = 'initialInvestment' name="initialInvestment" type="number" placeholder="$10,000" required>
+      </div>
+
+      <div>
+        <label for="contribution">Annual Contribution</label>
+        <input id="contribution" class = 'contribution' name="contribution" type="number" placeholder="$5,000" required>
+      </div>
+
+      <div>
+        <label for="withdraw_age">Age to Begin Withdrawing</label>
+        <input type="number" class="withdraw-age" placeholder="65" required>
+      </div>
+
+      <div>
+        <label for="withdraw_amount">Amount to Withdraw Per Year</label>
+        <input type="number" class="withdraw-amount" placeholder="65" required>
+      </div>
+
+    <button type=submit>Submit</button>
+  </form> -->
+  <h1 id='main'><strong>How Much Do You Know About Retirement?</strong></h1>
+  <h2 id='main'>Why This Project?</h2>
+  <p id='bkgdText'>We are often warned about the dangers of not preparing early or well enough for retirement.
+    Some of us may skeptically chalk this up to the same kind of intimidation tactics used by parents to force their kids to finish their vegetables.
+    What's worse is that there seem to be few resources offered to clarify this skeptism and help us make sense of our finances.
+
+    <br><br>
+    With this visualization, I sought to understand the benefits of the Roth IRA retirement account versus traditional accounts, as I
+    have been told that the former is advantageous for young, low-income individuals. This is because when you contributes to a
+    Roth IRA account you pay income tax on that contribution now, which will be relatively low if you are low-income and
+    pays off over time because all of the appreciated savings can be withdrawn tax-free at the time of retirement.
+    Traditional accounts differ in that retirement funds are contributed before income tax but are taxed at the time of
+    retirement when withdrawn.
+
+    <br><br>
+    For example, say you are 20 years old and make $20,000 annually. At this income level, your federal income tax bracket is roughly 15%.
+    If you contribute $5,000 this year to your retirement fund, you pay $5,000*.15 = $375. Based on a standard 3% growth rate,
+    this will grow to roughly $18907 by the time you are 65. With a Roth IRA, you are allowed to withdraw this tax-free. With a traditional
+    account, however, you would have to pay roughly $18907*.15 = $2386 just in taxes. That being said, there are tradeoffs too.
+    If you are higher-income, then this initial $5000 contribution would be taxed at a higher rate and thus you may benefit from
+    avoiding these taxes now as compared with when your income is lower during retirement. To explain the intersection of these factors--age,
+    income, annual contribution, annual withdrawal after the age of 65, and years of appreciation--I created a visualization to better
+    understand which retirement options are best for which broad groups of people.
+
+    <br><br>
+    As you can see from the screenshots below, savings in the Roth IRA account last longer than those in traditional accounts
+    when contributed by low-income individuals; however the opposite is true for high-income individuals. But don't take my word for it, try
+    it out yourself!
+    <div id='img'>
+      <img src="img/low_income.png"style="width:650px">
+      <img src="img/high_income.png" style="width:650px">
+    </div>
+
+  </p>
+
+  <h2 id='main'>Play with the sliders below to see which retirement plan is best for you:</h2>
+  <p id='tradit'> *Blue line represents traditional retirement accounts</p>
+  <p id='roth'> *Green line represents the Roth IRA retirement accounts</p>
+  <label style="display: inline-block; width: 240px; text-align: center"><span id='ageRangeText'>Current Age: 25</span>
+    <input type="range" id="ageRange" min="25" max="50" value="25" oninput="createGraph()">
+  </label>
+  <label style="display: inline-block; width: 240px; text-align: center"><span id='incomeRangeText'>Income: $25000</span>
+    <input type="range" id="incomeRange" min="20000" max="200000" value="25000" oninput="createGraph()">
+  </label>
+  <label style="display: inline-block; width: 240px; text-align: center"><span id='contributionRangeText'>Yearly Contribution: $5000</span>
+    <input type="range" id="myRange" min="20" max="20000" value="5000" oninput="createGraph()">
+  </label>
+  <label style="display: inline-block; width: 240px; text-align: center"><span id='withdrawRangeText'>Yearly Withdrawal: $50000</span>
+    <input type="range" id="withdrawRange" min="1000" max="100000" value="50000" oninput="createGraph()">
+  </label>
+  <label style="display: inline-block; width: 240px; text-align: center"><span id='initInvestRangeText'>Initial Investment: $50000</span>
+    <input type="range" id="initInvestRange" min="0" max="10000" value="5000" oninput="createGraph()">
+  </label>
+
+  <!-- FOR SMALL MULTIPLES, LINK FORM3.JS -->
+  <!-- <script src="js/form3.js"></script> -->
+  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script> <!-- load d3.js library -->
+
+  <script>
+    function myFunction() {
+        var x = document.getElementById("myRange").value;
+        document.getElementById("demo").innerHTML = x;
+    }
+
+  /////////////////////////////////////////////
+  //Initialize graph with default slider values
+  /////////////////////////////////////////////
+  var income = document.getElementById("incomeRange").value;
+  var contribution = document.getElementById("myRange").value;
+  var withdrawAge = 65;
+  var withdrawAmount = document.getElementById("withdrawRange").value;
+  var currentAge = document.getElementById("ageRange").value;
+  var initialInvestment = document.getElementById("initInvestRange").value;;
+
+
+  var growthYears = parseFloat(withdrawAge) - parseFloat(currentAge)
+  var rothData = createRothData(contribution, currentAge, withdrawAge, income, initialInvestment, withdrawAmount)
+  var tradData = createTradData(contribution, currentAge, withdrawAge, income, initialInvestment, withdrawAmount)
+  var appreciationYears = withdrawAge - currentAge
+  var maxAge = Math.max(rothData[rothData.length-1]['age'], tradData[tradData.length-1]['age'])
+  // console.log(maxAge);
+  var maxSavings = Math.max(rothData[appreciationYears]['maxAppreciation'], tradData[appreciationYears]['maxAppreciation'])
+  // console.log('max savings:');
+  // console.log(maxSavings);
+  console.log('tradData:');
+  console.log(tradData);
+  console.log('rothData:');
+  console.log(rothData);
+
+  var margin = {top: 30, right: 20, bottom: 30, left: 100},
+    width = 1200 - margin.left - margin.right,
+    height = 370 - margin.top - margin.bottom;
+
+
+  var x = d3.scale.linear()
+                  .domain([0, 100]) //the domain should essentially map the data points to the num pixels
+                  .range([0, width]); //the range should be the num pixels of y axis
+  var y = d3.scale.linear()
+                  .domain([1500000, 0])
+                  .range([0, height]);
+
+  // Define the axes
+  var xAxis = d3.svg.axis().scale(x)
+      .orient("bottom").ticks(5);
+
+  var yAxis = d3.svg.axis().scale(y)
+      .orient("left").ticks(5);
+
+  // Define the line
+  var valueline = d3.svg.line()
+      .x(function(d) { return x(d.age); })
+      .y(function(d) { return y(d.savings); })
+
+
+  // Adds the svg canvas
+  var svg = d3.select("body")
+      .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+          .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+
+  // Add the valueline path.
+  svg.append("path")
+      .attr("class", "line")
+      .attr("d", valueline(tradData));
+
+  svg.append("path")
+      .attr("class", "rothline")
+      .attr("d", valueline(rothData));
+
+
+  // Add the X Axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .append("text") // text label for the x axis
+      .attr("x", width/2 )
+      .attr("y", 30 )
+      .style("text-anchor", "middle")
+      .text("Years Old");
+
+  // Add the Y Axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text") // text label for the x axis
+      .attr("x", -150 )
+      .attr("y", -85 )
+      .style("text-anchor", "middle")
+      .text("Retirement Savings (USD)")
+      .attr("transform", "rotate(-90)");
+
+    /////////////////////////////////////////////
+    //Update graph when sliders are moved
+    /////////////////////////////////////////////
+
+    function createGraph(){
+      //update user input values
+      var income = document.getElementById("incomeRange").value;
+      var contribution = document.getElementById("myRange").value;
+      var withdrawAge = 65;
+      var withdrawAmount = document.getElementById("withdrawRange").value;
+      var currentAge = document.getElementById("ageRange").value;
+      var initialInvestment = document.getElementById("initInvestRange").value;
+
+      //debugging:
+      // console.log('income:');
+      // console.log(income);
+      // console.log('contribution');
+      // console.log(contribution);
+      // console.log('age:');
+      // console.log(currentAge);
+
+      d3.select("#incomeRangeText").text('Income: $' + income);
+      d3.select("#contributionRangeText").text('Yearly Contribution: $' + contribution);
+      d3.select("#withdrawRangeText").text('Yearly Withdrawl: $' + withdrawAmount);
+      d3.select("#ageRangeText").text('Current Age: ' + currentAge);
+      d3.select("#initInvestRangeText").text('Initial Investment: $' + initialInvestment);
+
+      //create necessary params for creating data from user input
+      var growthYears = parseFloat(withdrawAge) - parseFloat(currentAge)
+      var rothData = createRothData(contribution, currentAge, withdrawAge, income, initialInvestment, withdrawAmount)
+      var tradData = createTradData(contribution, currentAge, withdrawAge, income, initialInvestment, withdrawAmount)
+      var appreciationYears = withdrawAge - currentAge
+      var maxAge = Math.max(rothData[rothData.length-1]['age'], tradData[tradData.length-1]['age'])
+      var maxSavings = Math.max(rothData[appreciationYears]['maxAppreciation'], tradData[appreciationYears]['maxAppreciation'])
+
+      //debugging:
+      // console.log('maxAge');
+      // console.log(maxAge);
+      // console.log('max savings:');
+      // console.log(maxSavings);
+
+      svg.selectAll("path."+"line")
+          .attr("d", valueline(tradData));
+
+      svg.selectAll("path."+"rothline")
+          .attr("d", valueline(rothData));
+    }
+
+    //create Roth account data
+    function createRothData(contribution, age, withdrawAge, income, initialInvestment, withdrawAmount){
+      //create appreciation data
+      var rothData = []
+
+      //determine tax brackets that will be applied at the time of contribution
+      if (income < 9275){
+        taxRate = 0.1
+      }else if (income > 9276 && income < 37650) {
+        taxRate = 0.15
+      }else if (income > 37651 && income < 91150) {
+        taxRate = 0.25
+      }else if (income < 91150 && income < 190150) {
+        taxRate = 0.28
+      }else if (income < 190151 && income < 413350) {
+        taxRate = 0.33
+      }else if (income < 413351 && income < 415050) {
+        taxRate = 0.35
+      }else if (income > 415051) {
+        taxRate = 0.396
+      }
+      for (i = age; i <= withdrawAge; i++){
+        var singleObj = {}
+        if (i == age){
+          appreciate_temp = parseFloat(contribution) + parseFloat(initialInvestment)
+        }
+        singleObj['age'] = i;
+        singleObj['savings'] = appreciate_temp
+        rothData.push(singleObj)
+        var appreciation = appreciate_temp
+        contAfterTaxes = contribution*(parseFloat(1) - parseFloat(taxRate))
+        appreciate_temp = appreciate_temp*1.03
+        appreciate_temp = parseFloat(appreciate_temp) + parseFloat(contAfterTaxes)
+
+      }
+      singleObj['maxAppreciation'] = appreciation
+      rothData.push(singleObj)
+
+      //create roth data as savings are withdrawn during retirement years
+      return createRothDeprData(rothData, withdrawAge, appreciation, withdrawAmount)
+    }
+
+    function createRothDeprData(data, withdrawAge, appreciation, withdrawAmount){
+      count = 0
+      year = Math.floor(withdrawAge)
+      while (appreciation>0 && withdrawAmount<appreciation){
+        count += 1
+        year += 1
+        singleObj = {}
+        singleObj['age'] = year
+        appreciation = parseFloat(appreciation) - parseFloat(withdrawAmount)
+        singleObj['savings'] = appreciation
+        data.push(singleObj)
+      }
+      if (appreciation>0 && withdrawAmount>appreciation){
+        singleObj = {}
+        percentOfYear = appreciation/withdrawAmount
+        singleObj['age'] = year + percentOfYear
+        singleObj['savings'] = 0
+        data.push(singleObj)
+      }
+
+      return data
+    }
+
+    function createTradData(contribution, age, withdrawAge, income, initialInvestment, withdrawAmount){
+      var data = []
+
+      for (i = age; i <= withdrawAge; i++){
+        var singleObj = {}
+        if (i == age){
+          appreciate_temp = parseFloat(contribution) + parseFloat(initialInvestment)
+        }
+        singleObj['age'] = i;
+        singleObj['savings'] = appreciate_temp
+        data.push(singleObj)
+        var appreciation = appreciate_temp
+        appreciate_temp = appreciate_temp*1.03
+        appreciate_temp = parseFloat(appreciate_temp) + parseFloat(contribution)
+      }
+      singleObj['maxAppreciation'] = appreciation
+      data.push(singleObj)
+
+      //create roth data as savings are withdrawn during retirement years
+      return createTradDeprData(data, withdrawAge, appreciation, withdrawAmount)
+    }
+
+      function createTradDeprData(data, withdrawAge, appreciation, wAmount){
+      year = Math.floor(withdrawAge)
+      wAmount = Math.floor(wAmount)
+
+      //determine tax brackets that will be applied during retirement withdrawal
+      if (wAmount < 9275){
+        taxRate = 1.1
+      }else if (wAmount > 9276 && wAmount < 37650) {
+        taxRate = 1.15
+      }else if (wAmount > 37651 && wAmount < 91150) {
+        taxRate = 1.25
+      }else if (wAmount < 91150 && wAmount < 190150) {
+        taxRate = 1.28
+      }else if (wAmount < 190151 && wAmount < 413350) {
+        taxRate = 1.33
+      }else if (wAmount < 413351 && wAmount < 415050) {
+        taxRate = 1.35
+      }else if (wAmount > 415051) {
+        taxRate = 1.396
+      }
+
+      while (appreciation>0 && (wAmount*taxRate)<appreciation){
+        year += 1
+        singleObj = {}
+        singleObj['age'] = year
+        appreciation = parseFloat(appreciation) - parseFloat(wAmount*taxRate)
+        singleObj['savings'] = appreciation
+        data.push(singleObj)
+      }
+      if (appreciation>0 && (wAmount*taxRate)>appreciation){
+        singleObj = {}
+        percentOfYear = appreciation/(wAmount*taxRate)
+        singleObj['age'] = year + percentOfYear
+        singleObj['savings'] = 0
+        data.push(singleObj)
+      }
+
+      return data
+    }
+  </script>
+  </body>
+</html>
